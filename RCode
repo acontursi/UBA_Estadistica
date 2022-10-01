@@ -1,0 +1,336 @@
+# Programacion 01/10/2022
+
+# BUCLE
+
+#----- Sintaxis general
+# for (lista_de_valores) {
+# programa
+# }
+
+# Vector que quiero elevar al cuadrado
+x = 1:10
+x_al_cuadrado = x
+# Alternativa (crear un vector vacío)
+x_al_cuadrado = vector("numeric", length(x))
+
+for (i in 1:length(x)){
+  x_al_cuadrado[i] = x[i]^2 
+}
+
+##--- Armar un Vector
+angulo = seq(0,360,lenght=60)
+radianes = angulo*pi/180
+x = cos(radianes)
+y = sin(radianes)
+
+plot(y, x, axes=F, xlab="", ylab="", type="l")
+
+for (i in 1:length(angulo)){
+  arrows(0,0, y[i], x[i], col ="blue")
+  Sys.sleep(1)  
+}
+
+
+##--- Matriz
+
+matriz = matrix(1:16, nrow = 4)
+
+# Transponer una matriz cuadrada
+matriz_transpuesta = matriz
+for(i in 1:nrow(matriz)){
+  for(j in 1:ncol(matriz)){
+    matriz_transpuesta[j,i] = matriz[i, j]
+  }
+}
+
+# Colocar dentro de una función
+transponer = function(matriz){
+  matriz_transpuesta = matriz
+  for(i in 1:nrow(matriz)){
+    for(j in 1:ncol(matriz)){
+      matriz_transpuesta[j,i] = matriz[i, j]
+    }
+  }
+  return(matriz_transpuesta)
+}
+
+
+# Transponer una matriz rectangular
+matriz_rectangular=matrix(1:20, 4, 5)
+
+transponer = function(matriz){
+  matriz_transpuesta = matrix(0, nrow=ncol(matriz),
+                                  ncol=nrow(matriz))
+  print(dim(matriz_transpuesta))
+  for(i in 1:nrow(matriz)){
+    for(j in 1:ncol(matriz)){
+      matriz_transpuesta[j,i] = matriz[i, j]
+      print(c(i,j))
+    }
+  }
+  return(matriz_transpuesta)
+}
+
+
+transponer(matriz_rectangular)
+
+# Medir eficiencia
+install.packages("rbenchmark")
+library(rbenchmark)
+benchmark(t(matriz_rectangular),
+          transponer(matriz_rectangular))
+          
+          
+          
+##  WHILE
+
+# while (condicion_logical_true) {
+#   programita
+# }
+
+primera_aparicion = function(valor, lista_de_numeros){
+  i = 1
+  while (lista_de_numeros[i] != valor) {
+    print(c(i, lista_de_numeros[i], lista_de_numeros[i] != valor))
+    i = i + 1
+    # if (i == length(lista_de_numeros)){
+    #   print(paste("Aparece en", i))
+    # }
+    }
+  }
+  return(i)
+}
+
+lista_de_numeros = c(1 ,21, 13, 14, 5, 6)
+valor = 14
+
+primera_aparicion(valor, lista_de_numeros)
+
+
+
+
+# Valores únicos
+# Dada una lista de palabras, queremos encontrar el subconjunto resultante de eliminar todas las repetidas. Es decir, buscamos el conjunto de valores únicos de la lista. Por ejemplo, en la lista
+
+lista_de_palabras = c("aca", "hay", "una", "una", "duplicada")
+
+# hay una palabra duplicada, "una". La salida esperada es c("aca", "hay", "una", "duplicada").
+
+lista_unica <- unique(lista_de_palabras)
+
+# Escriba una función que decida si una palabra pertenece a una lista de palabras. Use el siguiente modelo:
+
+# Con FOR  
+contenedor <- vector("logical", length(lista_de_palabras))
+
+buscar_una_palabra = function(x, lista_de_palabras){
+  for(i in 1:length(lista_de_palabras)){
+    si_esta_la_palabra = ifelse(x == lista_de_palabras[i], TRUE, FALSE)
+    contenedor[i] = si_esta_la_palabra
+  }
+  return(any(contenedor))
+}
+
+buscar_una_palabra("una", lista_de_palabras)
+
+
+# Con WHILE
+
+buscar_una_palabra = function(x, lista_de_palabras){
+    i = 1
+    while(x != lista_de_palabras[i] & i <= length(lista_de_palabras)){
+      i = i + 1
+    }
+    return(i <= length(lista_de_palabras))
+  }
+
+
+# Si la función buscar_una_palabra hubiera sido correctamente implementada, las siguientes expresiones serían verdaderas:
+  
+buscar_una_palabra("hola", list("hola", "chau")) == TRUE
+# TRUE
+
+buscar_una_palabra("alo", list("hola", "chau")) == FALSE
+# TRUE
+
+Escriba una función que verifique ambas condiciones de manera automática.
+
+test_buscar_una_palabra = function(){
+  # pasa_los_test = ... # logical
+  return(pasa_los_test)
+}
+
+Cada vez que modifiquemos nuestra función original, tenemos una forma rápida de verificar que aún funciona.
+
+Use la función anterior para determinar el vector de elementos únicos de una lista de palabras. Use el siguiente modelo como base:
+  
+  borrar_duplicados = function(lista_de_palabras){
+    # unicos = ...  # vector
+    return(unicos)
+  }
+
+En R disponemos del comando unique. Comparemos los desempeños comparando sus tiempos de ejecución. Usaremos el comando benchmark del paquete rbenchmark.
+
+# Instalamos el paquete
+install.packages("rbenchmark")
+# Cargamos el paquete
+library("rbenchmark")
+
+# Generamos una lista de la palabras para testear
+lista_test = generar_lista(letters[1:10], sample(2:5, 10, replace = TRUE))
+
+# Comparamos los tiempos
+benchmark(borrar_duplicados(lista_test), unique(lista_test))
+
+Modifique la función anterior para contar la cantidad de elementos de cada elemento único. Es decir, calcule la frecuencia absoluta de los elementos únicos encontrados.
+
+contar_palabras = function(lista_de_palabras){
+  # unicos = ... # vector character
+  # aparece = ... # vector integer
+  return(lista(unicos = ..., aparece = ...)
+         }
+
+Compare el desempeño contra la función table de R.
+
+Agregue a la función anterior un argumento frec_tipo para calcular la frecuencia relativa o la frecuencia porcentual.
+
+contar_palabras = function(lista_de_palabras, frec_tipo){
+  # unicos = ... # vector character
+  # aparece = ... # vector integer
+  return(lista(unicos = ..., aparece = ...)# Valores únicos
+# Dada una lista de palabras, queremos encontrar el subconjunto resultante de eliminar todas las repetidas. Es decir, buscamos el conjunto de valores únicos de la lista. Por ejemplo, en la lista
+
+lista_de_palabras = c("aca", "hay", "una", "una", "duplicada")
+
+# hay una palabra duplicada, "una". La salida esperada es c("aca", "hay", "una", "duplicada").
+
+lista_unica <- unique(lista_de_palabras)
+
+# Escriba una función que decida si una palabra pertenece a una lista de palabras. Use el siguiente modelo:
+
+# Con FOR  
+contenedor <- vector("logical", length(lista_de_palabras))
+
+buscar_una_palabra = function(x, lista_de_palabras){
+  for(i in 1:length(lista_de_palabras)){
+    si_esta_la_palabra = ifelse(x == lista_de_palabras[i], TRUE, FALSE)
+    contenedor[i] = si_esta_la_palabra
+  }
+  return(any(contenedor))
+}
+
+buscar_una_palabra("una", lista_de_palabras)
+
+
+# Con WHILE
+
+buscar_una_palabra = function(x, lista_de_palabras){
+    i = 1
+    while(x != lista_de_palabras[i] & i <= length(lista_de_palabras)){
+      i = i + 1
+    }
+    return(i <= length(lista_de_palabras))
+  }
+
+
+# Si la función buscar_una_palabra hubiera sido correctamente implementada, las siguientes expresiones serían verdaderas:
+  
+buscar_una_palabra("hola", list("hola", "chau")) == TRUE
+# TRUE
+
+buscar_una_palabra("alo", list("hola", "chau")) == FALSE
+# TRUE
+
+Escriba una función que verifique ambas condiciones de manera automática.
+
+test_buscar_una_palabra = function(){
+  # pasa_los_test = ... # logical
+  return(pasa_los_test)
+}
+
+Cada vez que modifiquemos nuestra función original, tenemos una forma rápida de verificar que aún funciona.
+
+Use la función anterior para determinar el vector de elementos únicos de una lista de palabras. Use el siguiente modelo como base:
+  
+  borrar_duplicados = function(lista_de_palabras){
+    # unicos = ...  # vector
+    return(unicos)
+  }
+
+En R disponemos del comando unique. Comparemos los desempeños comparando sus tiempos de ejecución. Usaremos el comando benchmark del paquete rbenchmark.
+
+# Instalamos el paquete
+install.packages("rbenchmark")
+# Cargamos el paquete
+library("rbenchmark")
+
+# Generamos una lista de la palabras para testear
+lista_test = generar_lista(letters[1:10], sample(2:5, 10, replace = TRUE))
+
+# Comparamos los tiempos
+benchmark(borrar_duplicados(lista_test), unique(lista_test))
+
+Modifique la función anterior para contar la cantidad de elementos de cada elemento único. Es decir, calcule la frecuencia absoluta de los elementos únicos encontrados.
+
+contar_palabras = function(lista_de_palabras){
+  # unicos = ... # vector character
+  # aparece = ... # vector integer
+  return(lista(unicos = ..., aparece = ...)
+         }
+
+Compare el desempeño contra la función table de R.
+
+Agregue a la función anterior un argumento frec_tipo para calcular la frecuencia relativa o la frecuencia porcentual.
+
+contar_palabras = function(lista_de_palabras, frec_tipo){
+  # unicos = ... # vector character
+  # aparece = ... # vector integer
+  return(lista(unicos = ..., aparece = ...)
+         }
+
+Haga un gráfico de barras con las frecuencias obtenidas de la función anterior. En función del tipo de frecuencia elegido el gráfico deberá ajustar su título y etiquetas en los ejes.
+
+plot_frecuencias = function(frecuencias, etiquetas, frec_tipo){
+  # ...
+}
+
+Agregué un argumento para graficar las N
+
+palabras con más apariciones. Pruebe la función con la salida del siguiente código que usa herramientas para manipular cadenas de texto de la librería stringr.
+
+install.packages("stringr")
+library(stringr)
+
+url = "https://www.gutenberg.org/files/14765/14765-8.txt"
+file = readLines(url(url))
+file_clean = unlist(strsplit(str_replace_all(file, "([,.0-9])", "")," "))
+file_clean
+
+    ¿Qué hace el siguiente código?
+
+  all(unique(file_clean) == borrar_duplicados(file_clean))
+         }
+
+Haga un gráfico de barras con las frecuencias obtenidas de la función anterior. En función del tipo de frecuencia elegido el gráfico deberá ajustar su título y etiquetas en los ejes.
+
+plot_frecuencias = function(frecuencias, etiquetas, frec_tipo){
+  # ...
+}
+
+Agregué un argumento para graficar las N
+
+palabras con más apariciones. Pruebe la función con la salida del siguiente código que usa herramientas para manipular cadenas de texto de la librería stringr.
+
+install.packages("stringr")
+library(stringr)
+
+url = "https://www.gutenberg.org/files/14765/14765-8.txt"
+file = readLines(url(url))
+file_clean = unlist(strsplit(str_replace_all(file, "([,.0-9])", "")," "))
+file_clean
+
+    ¿Qué hace el siguiente código?
+
+  all(unique(file_clean) == borrar_duplicados(file_clean))
+  
+  
