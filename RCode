@@ -334,3 +334,63 @@ file_clean
   all(unique(file_clean) == borrar_duplicados(file_clean))
   
   
+  
+  ##################
+  
+  CLASE 3 | 15 de Octubre de 2022
+  
+  
+cumples_repetidos = function(){
+  cumples = sample(1:365, n, T)
+  return(length(unique(cumples)) < length(cumples))
+}
+
+frecuencia_relativa = function(n){
+  resultados = replicate(10000, cumples_repetidos())
+  return(mean(resultados))
+}
+
+for(n in 2:90){
+  print(c(n, frecuencia_relativa(n)))
+}
+
+
+#-- EJERCICIO --#
+sorteo_valido = function(n){
+  personas <- 1:n
+  sorteo <- sample(n, n, F)
+  resultado <- (personas == sorteo)
+  ifelse(any(resultado) == "TRUE", FALSE, TRUE)
+}
+
+sorteo_valido(10)
+
+
+frecuencia_relativa = function(n){
+  resultados = replicate(100, sorteo_valido(n))
+  return(mean(resultados))
+}
+
+frecuencia_relativa(25)
+
+for(n in 3:15){
+  print(c(n, frecuencia_relativa(n)))
+}
+
+# Graficar
+
+x = 1:15 # personas
+y = numeric(15)
+for(n in 1:15){
+  y[n] = frecuencia_relativa(n)
+}
+
+plot(x, y, main="Problema del Amigo Invisible",
+     xlab="Cantidad de personas",
+     ylab="Frecuencias relativas",
+     col="blue", pch=20)
+axis(1, at = seq(0,50, by=5), tck=1, lty=2, col = "gray")
+axis(2, at = seq(0,1, by=0.1), tck=1, lty=2, col = "gray")
+
+
+  
